@@ -1,4 +1,4 @@
-I went by myself for this project, I essentially created everthing on my own. Total time worked was 3 days
+The people who contributed to this project was Omer Mohammed and Mario Ibrahim. Omer's contributions consisted of the java files and the jsp files. Mario's contribution was the user.java file and the E-R diagram. Total time conducted between the two for this project was 3 days. 
 
 Instructions to install:
 
