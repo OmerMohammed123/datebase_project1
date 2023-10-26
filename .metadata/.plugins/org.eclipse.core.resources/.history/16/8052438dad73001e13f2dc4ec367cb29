@@ -1,0 +1,126 @@
+import java.io.IOException;
+import java.sql.SQLException;
+import java.util.List;
+import javax.servlet.RequestDispatcher;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+
+public class ControlServlet extends HttpServlet {
+    private static final long serialVersionUID = 1L;
+    private UserDAO userDAO = new UserDAO();
+    private String currentUser;
+    private HttpSession session = null;
+
+    public ControlServlet() {
+    }
+
+    public void init() {
+        currentUser = "";
+    }
+
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        doGet(request, response);
+    }
+
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        String action = request.getServletPath();
+        System.out.println(action);
+
+        try {
+            switch (action) {
+                case "/login":
+                    login(request, response);
+                    break;
+                case "/register":
+                    register(request, response);
+                    break;
+                case "/initialize":
+                    initialize(request, response);
+                    break;
+                case "/root":
+                    rootPage(request, response);
+                    break;
+                case "/logout":
+                    logout(request, response);
+                    break;
+                case "/list":
+                    listUsers(request, response);
+                    break;
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    private void listUsers(HttpServletRequest request, HttpServletResponse response)
+            throws SQLException, IOException, ServletException {
+        List<User> listUsers = userDAO.listAllUsers();
+        request.setAttribute("listUsers", listUsers);
+        RequestDispatcher dispatcher = request.getRequestDispatcher("UserList.jsp");
+        dispatcher.forward(request, response);
+    }
+
+    private void rootPage(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        request.setAttribute("listUsers", userDAO.listAllUsers());
+        request.getRequestDispatcher("rootView.jsp").forward(request, response);
+    }
+
+    protected void login(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, SQLException {
+        String username = request.getParameter("username");
+        String password = request.getParameter("password");
+
+        if (username.equals("root") && password.equals("pass1234")) {
+            session = request.getSession();
+            session.setAttribute("username", username);
+            rootPage(request, response);
+        } else if (userDAO.isValid(username, password)) {
+            currentUser = username;
+            request.getRequestDispatcher("activitypage.jsp").forward(request, response);
+        } else {
+            request.setAttribute("loginStr", "Login Failed: Please check your credentials.");
+            request.getRequestDispatcher("login.jsp").forward(request, response);
+        }
+    }
+
+    private void initialize(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, SQLException {
+        initialize.initializeDatabase();
+        RequestDispatcher dispatcher = request.getRequestDispatcher("login.jsp");
+        dispatcher.forward(request, response);
+    }
+
+    private void register(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, SQLException {
+        String username = request.getParameter("username");
+        String password = request.getParameter("password");
+        String role = request.getParameter("role");
+        String confirm = request.getParameter("confirmation");
+
+        if (password.equals(confirm)) {
+            if (!userDAO.checkUsername(username)) {
+                User user = new User(username, password, role);
+                userDAO.insert(user);
+                response.sendRedirect("login.jsp");
+            } else {
+                request.setAttribute("errorOne", "Registration failed: Username taken, please enter a new username.");
+                request.getRequestDispatcher("register.jsp").forward(request, response);
+            }
+        } else {
+            request.setAttribute("errorTwo", "Registration failed: Password and Password Confirmation do not match.");
+            request.getRequestDispatcher("register.jsp").forward(request, response);
+        }
+    }
+
+    private void logout(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        currentUser = "";
+        response.sendRedirect("login.jsp");
+    }
+}
+
+	        
+	    
+
+
+
+

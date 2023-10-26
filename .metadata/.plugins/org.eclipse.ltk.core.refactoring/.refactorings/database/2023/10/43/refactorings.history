@@ -1,0 +1,3 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">&#x0A;<refactoring comment="Rename resource &apos;database/WebContent/goback.jsp&apos; to &apos;Re.jsp&apos;" description="Rename resource &apos;goback.jsp&apos;" flags="7" id="org.eclipse.ltk.core.refactoring.rename.resource" input="WebContent/goback.jsp" name="Re.jsp" stamp="1698277959280" updateReferences="true"/>&#x0A;<refactoring accessors="true" comment="Delete element from project &apos;database&apos;&#x0A;- Original project: &apos;database&apos;&#x0A;- Original element: &apos;Re.jsp&apos;" description="Delete element" element1="WebContent/Re.jsp" elements="0" flags="589830" id="org.eclipse.jdt.ui.delete" resources="1" stamp="1698277963966" subPackages="false" version="1.0"/>
+</session>
